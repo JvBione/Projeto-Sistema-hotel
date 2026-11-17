@@ -1,0 +1,16 @@
+# Atalhos que podem revelar caminhos pessoais
+*.lnk
+
+# Backups locais
+backup/
+backups/
+*backup*.json
+
+# Credenciais e arquivos temporários
+admin-auth.json
+*.tmp
+*.log
+
+# Saída de compilação
+launcher/bin/
+launcher/obj/

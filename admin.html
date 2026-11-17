@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel das Oliveiras • Painel do Administrador</title>
+    <link rel="icon" type="image/x-icon" href="app.ico" />
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/timeline.css" />
+    <style>
+        .admin-date-tag {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .admin-date-tag.badge-today {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .admin-date-tag.badge-future {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+        }
+        .admin-date-tag.badge-past {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+        .admin-res-card:hover {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(212, 163, 115, 0.4) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body class="admin-page" style="visibility: hidden;">
+    <!-- ==========================================================================
+         CABEÇALHO PRINCIPAL DO ADMINISTRADOR
+         ========================================================================== -->
+    <header class="top-header">
+        <div class="brand-container">
+            <div class="brand-icon">🌿</div>
+            <div class="brand-info">
+                <h1>HOTEL DAS OLIVEIRAS <span class="badge-pousada" style="background: rgba(234, 179, 8, 0.2); color: #fbbf24; border: 1px solid rgba(234, 179, 8, 0.4);">👑 Painel do Administrador</span></h1>
+                <p>Gestão Simplificada por Dia • Numeração de Notas & Faturamento Mensal</p>
+            </div>
+        </div>
+
+        <div class="header-clock-date">
+            <span>📅 <strong id="clockDate">Carregando...</strong></span>
+            <span>•</span>
+            <span>🕒 <strong id="clockTime">--:--:--</strong></span>
+        </div>
+
+        <div class="header-actions">
+            <button type="button" class="btn btn-secondary" id="btnAdminOpenReceivables" title="Pesquisar notas com saldo pendente">
+                💳 Saldos em Aberto <span id="adminReceivablesBadge" style="display: none; background: #f59e0b; color: #111827; border-radius: 10px; padding: 1px 6px; font-size: 0.7rem; font-weight: 800; margin-left: 3px;">0</span>
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnAdminLogout">
+                🔒 Sair
+            </button>
+            <a href="index.html" class="btn btn-primary" title="Retornar à tela da recepção"
+                style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                <span>🏨</span> Ir para Recepção
+            </a>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+         BARRA DE SELEÇÃO DE DIA (SIMPLIFICADA)
+         ========================================================================== -->
+    <section style="padding: 16px 24px 8px;">
+        <div class="card"
+            style="background: var(--bg-surface); border: 1px solid var(--border-highlight); border-radius: var(--radius-lg); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: var(--shadow-md);">
+
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">
+                    📅 Selecionar Dia:
+                </span>
+                <div style="display: inline-flex; align-items: center; gap: 6px;">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnAdminPrevDay" title="Dia anterior">
+                        ◀ Anterior
+                    </button>
+                    <input type="text" id="adminDateInput" class="form-input" placeholder="DD/MM/AA"
+                        maxlength="8" autocomplete="off" aria-label="Selecionar dia no formato dia, mês e ano"
+                        style="width: 170px; font-weight: 700; text-align: center; padding: 6px 10px;" />
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnAdminNextDay" title="Próximo dia">
+                        Próximo ▶
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnAdminToday" title="Ir para o dia de hoje">
+                        Hoje
+                    </button>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span id="adminDateLabel" style="font-size: 1.15rem; font-weight: 800; color: #fff;">
+                    --
+                </span>
+                <span id="adminDateBadge"
+                    style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 3px 10px; border-radius: 8px; font-weight: 700; font-size: 0.75rem;">
+                    Hoje
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         CARDS DE INDICADORES FINANCEIROS E OPERACIONAIS DO DIA E MÊS
+         ========================================================================== -->
+    <section class="dashboard-kpi-container" aria-label="Indicadores Administrativos">
+        <div class="kpi-card">
+            <div class="kpi-icon occupancy">📄</div>
+            <div class="kpi-details">
+                <span class="kpi-label">Notas / Reservas no Dia</span>
+                <span class="kpi-value" id="kpiAdminNotesCount">0</span>
+                <span class="kpi-subtext" id="kpiAdminNotesSubtext">Apartamentos ocupados</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon revenue">💵</div>
+            <div class="kpi-details">
+                <span class="kpi-label">Recebimentos no Dia</span>
+                <span class="kpi-value" id="kpiAdminDayRevenue">R$ 0,00</span>
+                <span class="kpi-subtext">Pagamentos registrados na data selecionada</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon checkin">💳</div>
+            <div class="kpi-details">
+                <span class="kpi-label">Saldo em Aberto (Todas as Notas)</span>
+                <span class="kpi-value" id="kpiAdminDayDue">R$ 0,00</span>
+                <span class="kpi-subtext">Permanece até a quitação de cada nota</span>
+            </div>
+        </div>
+
+        <div class="kpi-card" style="border-color: rgba(212, 163, 115, 0.4);">
+            <div class="kpi-icon rooms">📈</div>
+            <div class="kpi-details">
+                <span class="kpi-label">Faturamento Total do Mês</span>
+                <span class="kpi-value" id="kpiAdminMonthRevenue" style="color: var(--text-gold);">R$ 0,00</span>
+                <span class="kpi-subtext" id="kpiAdminMonthLabel">Mês selecionado</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         BARRA DE BUSCA E FILTROS RÁPIDOS DA ADMINISTRAÇÃO
+         ========================================================================== -->
+    <section style="padding: 6px 24px 14px;">
+        <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 280px; max-width: 480px;">
+                <input type="text" id="adminSearchInput" class="form-input"
+                    placeholder="🔍 Pesquisar por Nº da Nota (ex: NF-1001), Hóspede ou Quarto..." />
+            </div>
+
+            <div class="filters-group" id="adminStatusFilters">
+                <button type="button" class="filter-btn active" data-filter="all">Todas as Notas (<span id="filterCountAll">0</span>)</button>
+                <button type="button" class="filter-btn" data-filter="checkin">📥 Check-in Hoje</button>
+                <button type="button" class="filter-btn" data-filter="stay">🏨 Em Estadia</button>
+                <button type="button" class="filter-btn" data-filter="checkout">📤 Check-out Hoje</button>
+                <button type="button" class="filter-btn" data-filter="pending">⚠️ Com Saldo Devedor</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         CONFIGURAÇÃO DE DIÁRIAS PRÉ-DEFINIDAS (POR PESSOA)
+         ========================================================================== -->
+    <section style="padding: 0 24px 20px;">
+        <div class="card" style="background: var(--bg-surface); border: 1px solid var(--border-highlight); border-radius: var(--radius-lg); padding: 20px 24px; box-shadow: var(--shadow-md);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px;">
+                <div>
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #fff; margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <span>💰</span> Configuração de Diárias Pré-definidas (Por Pessoa)
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+                        Defina os valores das diárias aplicados automaticamente na recepção conforme o número de hóspedes.
+                    </p>
+                </div>
+
+                <!-- 2 Abas Solicitadas: Suítes Masters e Demais Quartos -->
+                <div class="filters-group" id="pricingTabs">
+                    <button type="button" class="filter-btn active" data-pricing-tab="demaisQuartos" id="tabDemaisQuartos">
+                        🛏️ Demais Quartos (Padrão)
+                    </button>
+                    <button type="button" class="filter-btn" data-pricing-tab="suiteMaster" id="tabSuiteMaster">
+                        ⭐ Suítes Masters (Q. 110 e 210)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Painel Aba 1: Demais Quartos -->
+            <div id="panelDemaisQuartos" class="pricing-panel">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; background: rgba(255,255,255,0.02); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">
+                            Valor Base por Pessoa (R$):
+                        </label>
+                        <input type="number" id="basePriceDemais" class="form-input" style="width: 130px; font-weight: 700;" min="0" step="5" value="110" />
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnAutoCalcDemais" title="Multiplica o valor base pela quantidade de pessoas">
+                            ⚡ Preencher Proporcional (1x, 2x, 3x...)
+                        </button>
+                    </div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">
+                        Válido para os 30 apartamentos convencionais
+                    </span>
+                </div>
+
+                <div class="form-grid-3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                    <div class="form-group">
+                        <label for="priceDemais1">👤 1 Pessoa (Single)</label>
+                        <input type="number" id="priceDemais1" class="form-input" min="0" step="5" />
+                    </div>
+                    <div class="form-group">
+                        <label for="priceDemais2">👥 2 Pessoas (Casal/Duplo)</label>
+                        <input type="number" id="priceDemais2" class="form-input" min="0" step="5" />
+                    </div>
+                    <div class="form-group">
+                        <label for="priceDemais3">👨‍👩‍👧 3 Pessoas (Triplo)</label>
+                        <input type="number" id="priceDemais3" class="form-input" min="0" step="5" />
+                    </div>
+                    <div class="form-group">
+                        <label for="priceDemais4">👨‍👩‍👧‍👦 4 Pessoas (Quádruplo)</label>
+                        <input type="number" id="priceDemais4" class="form-input" min="0" step="5" />
+                    </div>
+                    <div class="form-group">
+                        <label for="priceDemais5">👥 5 Pessoas</label>
+                        <input type="number" id="priceDemais5" class="form-input" min="0" step="5" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel Aba 2: Suítes Masters -->
+            <div id="panelSuiteMaster" class="pricing-panel" style="display: none;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; background: rgba(212, 163, 115, 0.08); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid rgba(212, 163, 115, 0.3);">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <label style="font-size: 0.85rem; font-weight: 700; color: var(--accent-gold);">
+                            ⭐ Valor Base Suíte Master por Pessoa (R$):
+                        </label>
+                        <input type="number" id="basePriceMaster" class="form-input" style="width: 130px; font-weight: 700;" min="0" step="5" value="190" />
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnAutoCalcMaster" title="Multiplica o valor base pela quantidade de pessoas">
+                            ⚡ Preencher Proporcional (1x, 2x, 3x...)
+                        </button>
+                    </div>
+                    <span style="font-size: 0.75rem; color: var(--accent-gold);">
+                        Válido para Quarto 110 e Quarto 210 (1 Cama Casal • Até 2 pessoas)
+                    </span>
+                </div>
+
+                <div class="form-grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; max-width: 500px;">
+                    <div class="form-group">
+                        <label for="priceMaster1">👤 1 Pessoa (Single Master)</label>
+                        <input type="number" id="priceMaster1" class="form-input" min="0" step="5" />
+                    </div>
+                    <div class="form-group">
+                        <label for="priceMaster2">👥 2 Pessoas (Casal Master)</label>
+                        <input type="number" id="priceMaster2" class="form-input" min="0" step="5" />
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+                <button type="button" class="btn btn-primary" id="btnSavePricing" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span>💾</span> Salvar Tabela de Diárias
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         LISTAGEM DAS NOTAS E RESERVAS DO DIA
+         ========================================================================== -->
+    <main style="padding: 0 24px 40px;">
+        <div class="card"
+            style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md);">
+            
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: rgba(255,255,255,0.02);">
+                <h3 style="font-size: 1.1rem; font-weight: 700; color: #fff; margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <span>📋</span> Numerações de Notas & Reservas do Dia
+                </h3>
+                <span id="adminResultCountBadge" style="font-size: 0.8rem; color: var(--text-muted);">
+                    Mostrando 0 reserva(s)
+                </span>
+            </div>
+
+            <div id="adminReservationsContainer" style="padding: 16px;">
+                <!-- Preenchido dinamicamente via js/admin.js -->
+            </div>
+        </div>
+    </main>
+
+    <!-- ==========================================================================
+         MODAL: NOTAS COM SALDO EM ABERTO
+         ========================================================================== -->
+    <div class="modal-overlay" id="adminReceivablesModal" role="dialog" aria-modal="true" aria-labelledby="adminReceivablesTitle">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <div>
+                    <h3 id="adminReceivablesTitle">💳 Notas com Saldo em Aberto</h3>
+                    <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.82rem;">
+                        Pesquise por nota ou data sem limitar o saldo total em aberto.
+                    </p>
+                </div>
+                <button type="button" class="modal-close-btn" id="btnCloseAdminReceivables">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 65vh; overflow-y: auto;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; align-items: end; margin-bottom: 14px;">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="adminReceivablesNoteSearch">Pesquisar pela numeração da nota</label>
+                        <input type="search" id="adminReceivablesNoteSearch" class="form-input" placeholder="Ex.: NF-1001" />
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="adminReceivablesDateFilter">Data da hospedagem ou recebimento</label>
+                        <input type="date" id="adminReceivablesDateFilter" class="form-input" />
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="btnClearAdminReceivablesFilters">Limpar filtros</button>
+                </div>
+                <p id="adminReceivablesResultCount" style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px;"></p>
+                <div id="adminReceivablesList"></div>
+            </div>
+            <div class="modal-footer" style="justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" id="btnCloseAdminReceivablesFooter">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL: REGISTRAR RECEBIMENTO
+         ========================================================================== -->
+    <div class="modal-overlay" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h3 id="paymentModalTitle">💳 Registrar Recebimento</h3>
+                <button class="modal-close-btn" id="btnClosePaymentModal" aria-label="Fechar">&times;</button>
+            </div>
+            <form id="paymentForm">
+                <div class="modal-body">
+                    <p id="paymentReservationInfo" style="color: var(--text-secondary);"></p>
+                    <div class="form-group">
+                        <label for="paymentDate">Data do recebimento</label>
+                        <input type="date" id="paymentDate" class="form-input" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentAmount">Valor recebido (R$)</label>
+                        <input type="number" id="paymentAmount" class="form-input" min="0.01" step="0.01" required />
+                        <small id="paymentBalance" style="color: var(--text-muted);"></small>
+                        <small id="paymentLegacyBalance" style="display: block; color: var(--text-muted); margin-top: 6px;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentMethod">Forma de pagamento</label>
+                        <select id="paymentMethod" class="form-select" required>
+                            <option value="PIX">PIX</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="Transferência">Transferência Bancária</option>
+                        </select>
+                    </div>
+                    <div id="paymentHistory" style="font-size: 0.8rem; color: var(--text-secondary);"></div>
+                </div>
+                <div class="modal-footer" style="justify-content: flex-end; gap: 8px;">
+                    <button type="button" class="btn btn-secondary" id="btnCancelPayment">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" id="btnAssignLegacyPayment" hidden>Associar pagamento anterior à data</button>
+                    <button type="submit" class="btn btn-primary" id="btnSavePayment">Salvar recebimento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL: VOUCHER / COMPROVANTE DE RESERVA (REAPROVEITADO)
+         ========================================================================== -->
+    <div class="modal-overlay" id="voucherModal" role="dialog" aria-modal="true">
+        <div class="modal-card modal-lg">
+            <div class="modal-header no-print">
+                <h3>🧾 Comprovante de Reserva / Nota</h3>
+                <button class="modal-close-btn" id="btnCloseVoucherModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="voucher-print-container" id="voucherContent">
+                    <!-- Conteúdo preenchido pelo JS -->
+                </div>
+            </div>
+            <div class="modal-footer no-print" style="display: flex; justify-content: space-between;">
+                <div>
+                    <button type="button" class="btn btn-secondary" id="btnCopyWhatsApp">
+                        📲 Copiar p/ WhatsApp
+                    </button>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-primary" id="btnPrintVoucher">
+                        🖨️ Imprimir / Salvar PDF
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="btnCloseVoucherBtn">
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container de Toasts -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- Scripts do Sistema -->
+    <script src="js/rooms.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/reservations.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,435 @@
+/* ==========================================================================
+   TIMELINE PMS - GRADE DE OCUPAÇÃO HORIZONTAL (DIAS DO MÊS x 32 QUARTOS)
+   ========================================================================== */
+
+.timeline-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 24px 24px;
+    overflow: hidden;
+}
+
+.timeline-wrapper-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Container com scroll duplo (horizontal e vertical) */
+.timeline-scroll-container {
+    overflow: auto;
+    position: relative;
+    max-height: calc(100vh - 270px);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-highlight) transparent;
+}
+
+.timeline-scroll-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.timeline-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--border-highlight);
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   TABELA / GRADE DA TIMELINE
+   ========================================================================== */
+.timeline-table {
+    display: grid;
+    position: relative;
+    border-collapse: collapse;
+    user-select: none;
+    background: var(--bg-surface);
+}
+
+/* Cabeçalho Sticky (Top) */
+.timeline-header-row {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: #111a30;
+    border-bottom: 2px solid var(--border-highlight);
+}
+
+/* Canto Superior Esquerdo Sticky (Fixa em X e Y) */
+.timeline-corner-cell {
+    width: 260px;
+    min-width: 260px;
+    position: sticky;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    background: #0e162a;
+    border-right: 2px solid var(--border-highlight);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.timeline-days-header {
+    display: flex;
+}
+
+.timeline-day-col-header {
+    width: 50px;
+    min-width: 50px;
+    height: 60px;
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: #111a30;
+    transition: background 0.15s;
+}
+
+.timeline-day-col-header.weekend {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.timeline-day-col-header.today {
+    background: rgba(59, 130, 246, 0.2);
+    border-bottom: 2px solid #3b82f6;
+}
+
+.day-header-number {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.timeline-day-col-header.today .day-header-number {
+    color: #60a5fa;
+}
+
+.day-header-weekday {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.timeline-day-col-header.weekend .day-header-weekday {
+    color: #f59e0b;
+}
+
+/* ==========================================================================
+   SEPARADOR DE BLOCOS (DIVISOR DE BLOCO 1, BLOCO 2, BLOCO 3, BLOCO 4)
+   ========================================================================== */
+.timeline-block-divider-row {
+    display: flex;
+    background: #0b1120;
+    border-bottom: 1px solid var(--border-highlight);
+    border-top: 1px solid var(--border-highlight);
+    position: sticky;
+    left: 0;
+    z-index: 30;
+}
+
+.timeline-block-title-cell {
+    width: 260px;
+    min-width: 260px;
+    position: sticky;
+    left: 0;
+    z-index: 35;
+    background: #0b1120;
+    border-right: 2px solid var(--border-highlight);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.timeline-block-title-cell h4 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timeline-block-title-cell .block-count-badge {
+    font-size: 0.7rem;
+    background: rgba(212, 163, 115, 0.15);
+    color: var(--text-gold);
+    padding: 2px 6px;
+    border-radius: 12px;
+}
+
+/* ==========================================================================
+   LINHA DO QUARTO
+   ========================================================================== */
+.timeline-room-row {
+    display: flex;
+    border-bottom: 1px solid var(--border-subtle);
+    min-height: 56px;
+    position: relative;
+    transition: background 0.15s;
+}
+
+.timeline-room-row:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Célula Sticky do Quarto (Eixo Y fixo ao rolar em X) */
+.timeline-room-cell {
+    width: 260px;
+    min-width: 260px;
+    position: sticky;
+    left: 0;
+    z-index: 25;
+    background: var(--bg-surface);
+    border-right: 2px solid var(--border-highlight);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.timeline-room-row:hover .timeline-room-cell {
+    background: #17233f;
+}
+
+.room-cell-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.room-number-box {
+    width: 44px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    flex-shrink: 0;
+}
+
+.room-number-box.master {
+    border-color: rgba(212, 163, 115, 0.6);
+    background: rgba(212, 163, 115, 0.12);
+    color: var(--text-gold);
+}
+
+.room-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.room-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.room-sub-detail {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.room-price-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+/* ==========================================================================
+   CÉLULAS DE DIAS (GRID INTERATIVO)
+   ========================================================================== */
+.timeline-room-days {
+    display: flex;
+    position: relative;
+}
+
+.timeline-day-cell {
+    width: 50px;
+    min-width: 50px;
+    height: 56px;
+    border-right: 1px solid var(--border-subtle);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-day-cell.weekend {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.timeline-day-cell.today {
+    background: rgba(59, 130, 246, 0.08);
+}
+
+.timeline-day-cell:hover {
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.timeline-day-cell:hover::after {
+    content: '+';
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #93c5fd;
+    opacity: 0.7;
+}
+
+/* ==========================================================================
+   BARRAS DE RESERVA VISUAL
+   ========================================================================== */
+.reservation-bar {
+    position: absolute;
+    top: 6px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    z-index: 15;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    border: 1px solid transparent;
+}
+
+.reservation-bar:hover {
+    transform: translateY(-2px);
+    z-index: 20;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    filter: brightness(1.1);
+}
+
+/* Cores por Status */
+.reservation-bar.confirmada {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.95) 100%);
+    border-color: #34d399;
+    color: #ffffff;
+}
+
+.reservation-bar.pendente {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.9) 0%, rgba(217, 119, 6, 0.95) 100%);
+    border-color: #fbbf24;
+    color: #ffffff;
+}
+
+.reservation-bar.hospedado {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.9) 0%, rgba(14, 116, 144, 0.95) 100%);
+    border-color: #67e8f9;
+    color: #ffffff;
+}
+
+.reservation-bar.finalizada {
+    background: linear-gradient(135deg, rgba(71, 85, 105, 0.85) 0%, rgba(51, 65, 85, 0.9) 100%);
+    border-color: #94a3b8;
+    color: #e2e8f0;
+}
+
+.reservation-bar.bloqueio {
+    background: linear-gradient(135deg, rgba(225, 29, 72, 0.85) 0%, rgba(159, 18, 57, 0.9) 100%);
+    border-color: #fb7185;
+    color: #ffffff;
+}
+
+.res-guest-name {
+    font-weight: 700;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.res-night-badge {
+    font-size: 0.68rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   TOOLTIP / POPOVER DE DETALHES AO PASSAR O MOUSE
+   ========================================================================== */
+.reservation-tooltip {
+    position: fixed;
+    background: #0f172a;
+    border: 1px solid var(--border-highlight);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    color: #fff;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    pointer-events: none;
+    max-width: 320px;
+    font-size: 0.82rem;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: var(--glass-blur);
+}
+
+.reservation-tooltip.active {
+    display: flex;
+}
+
+.tooltip-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tooltip-dates {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.tooltip-financial {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+}

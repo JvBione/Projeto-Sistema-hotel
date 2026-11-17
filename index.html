@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel das Oliveiras - Sistema de Gestão e Reservas (PMS)</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/timeline.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+
+    <!-- ==========================================================================
+         CABEÇALHO SUPERIOR (NAVBAR)
+         ========================================================================== -->
+    <header class="top-header">
+        <div class="brand-container">
+            <div class="brand-icon">🌿</div>
+            <div class="brand-info">
+                <h1>
+                    Hotel das Oliveiras
+                </h1>
+                <p>Sistema de Gestão de Reservas & Recepção</p>
+            </div>
+        </div>
+
+        <div class="header-clock-date">
+            <span>📅 <strong id="headerCurrentDate">-</strong></span>
+            <span>•</span>
+            <span>🕒 <strong id="headerCurrentTime">--:--:--</strong></span>
+        </div>
+        <script>
+            (function updateImmediateClock() {
+                try {
+                    const now = new Date();
+                    const d = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+                    const t = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                    const dateEl = document.getElementById('headerCurrentDate');
+                    const timeEl = document.getElementById('headerCurrentTime');
+                    if (dateEl && d) dateEl.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+                    if (timeEl && t) timeEl.textContent = t;
+                } catch (e) { }
+            })();
+        </script>
+
+        <div class="header-actions">
+            <a href="admin.html" class="btn btn-secondary btn-sm" id="btnGoToAdmin" title="Acessar painel administrativo do hotel" style="text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                👑 Administração
+            </a>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnOpenReceivables" title="Consultar notas com saldo pendente">
+                💳 Saldos em Aberto <span id="headerReceivablesBadge" style="display: none; background: #f59e0b; color: #111827; border-radius: 10px; padding: 1px 6px; font-size: 0.7rem; font-weight: 800; margin-left: 3px;">0</span>
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btnNewBlock" title="Gestão de manutenção e interdição de quartos">
+                🔧 Manutenção <span id="headerMaintenanceBadge" style="display: none; background: #ef4444; color: #fff; border-radius: 10px; padding: 1px 6px; font-size: 0.7rem; font-weight: 800; margin-left: 3px;">0</span>
+            </button>
+            <button class="btn btn-primary" id="btnNewReservation" onclick="window.openNewReservationWizard()">
+                <span>➕</span> Nova Reserva
+            </button>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+         CARDS DE INDICADORES (KPI DASHBOARD DA RECEPÇÃO)
+         ========================================================================== -->
+    <section class="dashboard-kpi-container" aria-label="Indicadores da Recepção">
+        <div class="kpi-card">
+            <div class="kpi-icon occupancy">📊</div>
+            <div class="kpi-details">
+                <span class="kpi-label">Taxa de Ocupação Hoje</span>
+                <span class="kpi-value" id="kpiOccupancyRate">0%</span>
+                <span class="kpi-subtext" id="kpiOccupancySubtext">0 de 32 quartos</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon rooms">🔑</div>
+            <div class="kpi-details">
+                <span class="kpi-label">Quartos Livres Hoje</span>
+                <span class="kpi-value" id="kpiAvailableRooms">32</span>
+                <span class="kpi-subtext">Prontos para ocupação</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon checkin">📥</div>
+            <div class="kpi-details">
+                <span class="kpi-label">Check-ins Previstos Hoje</span>
+                <span class="kpi-value" id="kpiCheckInsToday">0</span>
+                <span class="kpi-subtext">Chegadas esperadas</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon checkout">📤</div>
+            <div class="kpi-details">
+                <span class="kpi-label">Check-outs Previstos Hoje</span>
+                <span class="kpi-value" id="kpiCheckOutsToday">0</span>
+                <span class="kpi-subtext">Saídas programadas</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         BARRA DE CONTROLE TEMPORAL E FILTROS
+         ========================================================================== -->
+    <nav class="controls-toolbar" aria-label="Controles do Calendário">
+        <div class="date-navigator">
+            <button class="btn btn-secondary btn-icon-only btn-sm" id="btnPrevMonth" title="Mês Anterior">◀</button>
+            <select id="selectMonth" aria-label="Selecionar Mês">
+                <option value="0">Janeiro</option>
+                <option value="1">Fevereiro</option>
+                <option value="2">Março</option>
+                <option value="3">Abril</option>
+                <option value="4">Maio</option>
+                <option value="5">Junho</option>
+                <option value="6">Julho</option>
+                <option value="7">Agosto</option>
+                <option value="8">Setembro</option>
+                <option value="9">Outubro</option>
+                <option value="10">Novembro</option>
+                <option value="11">Dezembro</option>
+            </select>
+            <select id="selectYear" aria-label="Selecionar Ano">
+                <!-- Preenchido via JS -->
+            </select>
+            <button class="btn btn-secondary btn-icon-only btn-sm" id="btnNextMonth" title="Próximo Mês">▶</button>
+            <button class="btn btn-secondary btn-sm" id="btnToday">Hoje</button>
+        </div>
+
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="inputSearch" placeholder="Buscar hóspede, telefone ou quarto..." />
+        </div>
+
+        <div class="filters-group" id="blockFilters">
+            <button type="button" class="filter-btn active" data-block="all" onclick="window.setBlockFilter('all')">
+                🏨 Todos os Blocos (32)
+            </button>
+            <button type="button" class="filter-btn" data-block="bloco-1" onclick="window.setBlockFilter('bloco-1')">
+                🌱 Bloco 1 (Térreo: 101 ao 110)
+            </button>
+            <button type="button" class="filter-btn" data-block="bloco-2" onclick="window.setBlockFilter('bloco-2')">
+                🏢 Bloco 2 (1º Andar: 201 ao 210)
+            </button>
+            <button type="button" class="filter-btn" data-block="bloco-3" onclick="window.setBlockFilter('bloco-3')">
+                🏡 Bloco 3 (111 ao 118)
+            </button>
+            <button type="button" class="filter-btn" data-block="bloco-4" onclick="window.setBlockFilter('bloco-4')">
+                ⭐ Bloco 4 (211 ao 214)
+            </button>
+        </div>
+
+        <div class="filters-group" id="typeFilters">
+            <button type="button" class="filter-btn active" data-type="all" onclick="window.setTypeFilter('all')">Todos
+                os Tipos</button>
+            <button type="button" class="filter-btn" data-type="com_janela"
+                onclick="window.setTypeFilter('com_janela')">🪟 Com Janela</button>
+            <button type="button" class="filter-btn" data-type="sem_janela"
+                onclick="window.setTypeFilter('sem_janela')">🚪 Sem Janela</button>
+            <button type="button" class="filter-btn" data-type="suite_master"
+                onclick="window.setTypeFilter('suite_master')">👑 Suíte Master</button>
+        </div>
+    </nav>
+
+    <!-- ==========================================================================
+         LEGENDA DE STATUS
+         ========================================================================== -->
+    <div class="status-legend-bar">
+        <div class="legend-items">
+            <div class="legend-item">
+                <span class="legend-color-dot confirmada"></span>
+                <span>Confirmada</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color-dot pendente"></span>
+                <span>Pré-reserva (Pendente)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color-dot hospedado"></span>
+                <span>Hospedado (Check-in)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color-dot finalizada"></span>
+                <span>Finalizada (Check-out)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color-dot bloqueio"></span>
+                <span>Bloqueio / Manutenção</span>
+            </div>
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.75rem;">
+            💡 <em>Dica: Dê um clique em qualquer dia na linha de um quarto para criar uma reserva.</em>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         PAINEL DE QUADRADOS DE OCUPAÇÃO RÁPIDA (HOJE)
+         Verde = Disponível para Reserva Hoje | Vermelho = Ocupado / Indisponível
+         ========================================================================== -->
+    <section class="room-status-overview-section" id="roomStatusOverviewSection" aria-label="Status de Ocupação Hoje">
+        <div class="room-status-overview-header">
+            <div class="overview-title-group">
+                <h3 id="roomStatusGridTitle">🏨 Ocupação Hoje • Todos os Blocos</h3>
+                <span class="overview-date-badge" id="roomStatusDateBadge">Hoje</span>
+            </div>
+            <div class="overview-legend-badges">
+                <span class="badge-status-pill available">
+                    <span class="dot"></span>
+                    <strong id="countAvailableToday">0</strong> Disponíveis Hoje (Verde)
+                </span>
+                <span class="badge-status-pill occupied">
+                    <span class="dot"></span>
+                    <strong id="countOccupiedToday">0</strong> Ocupados / Bloqueados (Vermelho)
+                </span>
+            </div>
+        </div>
+
+        <div class="rooms-squares-grid" id="roomsSquaresGrid">
+            <!-- Preenchido dinamicamente com os quadrados verdes e vermelhos -->
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         TIMELINE PRINCIPAL (MAPA DE OCUPAÇÃO)
+         ========================================================================== -->
+    <main class="timeline-section">
+        <div class="timeline-wrapper-card">
+            <div class="timeline-scroll-container" id="timelineScrollContainer">
+                <div class="timeline-table" id="timelineTable">
+                    <!-- Gerado dinamicamente via JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ==========================================================================
+         MODAL: NOVA RESERVA / EDITAR RESERVA
+         ========================================================================== -->
+    <div class="modal-overlay" id="reservationModal" role="dialog" aria-modal="true">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <h3 id="modalReservationTitle">➕ Nova Reserva</h3>
+                    <span id="badgeModalNota" style="display: none; background: rgba(212, 163, 115, 0.18); color: var(--text-gold); border: 1px solid var(--accent-gold); padding: 3px 10px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.05em;"></span>
+                </div>
+                <button class="modal-close-btn" id="btnCloseResModal" aria-label="Fechar">&times;</button>
+            </div>
+
+            <form id="reservationForm">
+                <input type="hidden" id="resId" />
+
+                <div class="modal-body">
+                    <!-- Banner de Informação da Nota quando existente -->
+                    <div id="resNotaInfoBanner" style="display: none; background: rgba(212, 163, 115, 0.12); border: 1px solid rgba(212, 163, 115, 0.35); border-radius: 8px; padding: 8px 14px; margin-bottom: 12px; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 0.82rem; color: #f1f5f9;">📄 <strong>Número da Nota da Reserva:</strong></span>
+                        <span id="displayResNumeroNota" style="font-size: 1rem; font-weight: 800; color: var(--accent-gold); letter-spacing: 0.05em;"></span>
+                    </div>
+
+                    <!-- PASSO 1: DATAS DE HOSPEDAGEM -->
+                    <div class="wizard-step-banner">
+                        <span class="step-badge">1</span>
+                        <div class="step-text">
+                            <h4>Datas da Estadia Desejada</h4>
+                            <p>Informe a data de entrada e saída para verificar os apartamentos livres</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label for="resCheckIn">📅 Data de Check-in (Entrada) <span
+                                    class="required">*</span></label>
+                            <input type="date" id="resCheckIn" class="form-input" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="resCheckOut">📅 Data de Check-out (Saída) <span
+                                    class="required">*</span></label>
+                            <input type="date" id="resCheckOut" class="form-input" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>🌙 Duração da Estadia</label>
+                            <input type="text" id="resNightsDisplay" class="form-input" value="0 noites" readonly
+                                style="background: rgba(255,255,255,0.04); font-weight: 700; color: #fbbf24;" />
+                        </div>
+                    </div>
+
+                    <!-- PASSO 2: ESCOLHA DO APARTAMENTO -->
+                    <div class="wizard-step-banner">
+                        <span class="step-badge">2</span>
+                        <div class="step-text">
+                            <h4>Escolha o Apartamento Disponível</h4>
+                            <p>Clique em um dos apartamentos verdes (livres nas datas escolhidas)</p>
+                        </div>
+                    </div>
+
+                    <!-- Abas de Bloco no Modal -->
+                    <div class="modal-block-tabs" id="modalBlockTabs">
+                        <button type="button" class="modal-block-tab-btn active" data-tab="all"
+                            onclick="window.filterModalRooms('all')">Todos (32)</button>
+                        <button type="button" class="modal-block-tab-btn" data-tab="bloco-1"
+                            onclick="window.filterModalRooms('bloco-1')">Bloco 1 (Térreo)</button>
+                        <button type="button" class="modal-block-tab-btn" data-tab="bloco-2"
+                            onclick="window.filterModalRooms('bloco-2')">Bloco 2 (1º Andar)</button>
+                        <button type="button" class="modal-block-tab-btn" data-tab="bloco-3"
+                            onclick="window.filterModalRooms('bloco-3')">Bloco 3</button>
+                        <button type="button" class="modal-block-tab-btn" data-tab="bloco-4"
+                            onclick="window.filterModalRooms('bloco-4')">Bloco 4</button>
+                    </div>
+
+                    <!-- Grade Visual de Seleção dos Apartamentos -->
+                    <div class="modal-room-picker-container">
+                        <div class="modal-room-picker-grid" id="modalRoomPickerGrid">
+                            <!-- Preenchido dinamicamente via JS com apartamentos disponíveis em verde -->
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3" style="margin-top: 4px;">
+                        <div class="form-group">
+                            <label for="resQuarto">Apartamento Selecionado <span class="required">*</span></label>
+                            <select id="resQuarto" class="form-select" required>
+                                <!-- Preenchido dinamicamente com os 32 quartos organizados por bloco -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="resStatus">Status da Reserva <span class="required">*</span></label>
+                            <select id="resStatus" class="form-select" required>
+                                <option value="confirmada">🟢 Confirmada</option>
+                                <option value="pendente">🟡 Pré-reserva (Pendente)</option>
+                                <option value="hospedado">🔵 Hospedado (Check-in Ativo)</option>
+                                <option value="finalizada">⚪ Check-out Realizado</option>
+                                <option value="bloqueio">🔴 Bloqueio / Manutenção</option>
+                                <option value="cancelada">✕ Cancelada</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Valor da Diária (Pré-definido)</label>
+                            <input type="hidden" id="resDiaria" value="0" />
+                            <div id="resDiariaDisplay" style="background: rgba(212, 163, 115, 0.1); border: 1px solid rgba(212, 163, 115, 0.35); border-radius: var(--radius-md); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; min-height: 42px;">
+                                <span id="displayDiariaValor" style="font-weight: 800; font-size: 1.05rem; color: var(--accent-gold);">R$ 0,00</span>
+                                <span id="displayDiariaInfo" style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">(Fixado p/ pessoa)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 3: DADOS DO HÓSPEDE -->
+                    <div class="wizard-step-banner">
+                        <span class="step-badge">3</span>
+                        <div class="step-text">
+                            <h4>Dados do Hóspede Titular & Pagamento</h4>
+                            <p>Preencha os dados de contato e financeiro para confirmar</p>
+                        </div>
+                    </div>
+
+                    <!-- Dados do Hóspede -->
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="resNome">Nome do Hóspede Titular <span class="required">*</span></label>
+                            <input type="text" id="resNome" class="form-input" placeholder="Ex: Maria das Graças"
+                                required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="resTelefone">WhatsApp / Telefone <span class="required">*</span></label>
+                            <input type="tel" id="resTelefone" class="form-input" placeholder="(00) 00000-0000"
+                                required />
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label for="resCpf">CPF / Documento</label>
+                            <input type="text" id="resCpf" class="form-input" placeholder="000.000.000-00" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="resCidade">Cidade de Origem</label>
+                            <input type="text" id="resCidade" class="form-input" placeholder="Ex: Campinas - SP" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Hóspedes (Adultos / Crianças)</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="number" id="resAdultos" class="form-input" min="1" max="6" value="2"
+                                    title="Adultos" />
+                                <input type="number" id="resCriancas" class="form-input" min="0" max="5" value="0"
+                                    title="Crianças" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financeiro -->
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label for="resValorTotal">Valor Total Estadia (R$)</label>
+                            <input type="number" id="resValorTotal" class="form-input" min="0" step="any" placeholder="0,00 (calculado ou manual)" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="resValorPago">Valor Pago / Entrada (R$)</label>
+                            <input type="number" id="resValorPago" class="form-input" min="0" step="10" value="0" />
+                            <small id="resValorPagoHint" style="color: var(--text-muted);">Para novas reservas, esse valor será registrado como recebido hoje.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="resFormaPagamento">Forma de Pagamento</label>
+                            <select id="resFormaPagamento" class="form-select">
+                                <option value="PIX">PIX</option>
+                                <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                <option value="Cartão de Débito">Cartão de Débito</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                                <option value="Transferência">Transferência Bancária</option>
+                                <option value="Pendente">Aguardando Pagamento</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Resumo Financeiro Automático -->
+                    <div class="financial-summary-card">
+                        <div class="financial-item">
+                            <span class="label">Total Geral</span>
+                            <span class="amount" id="summaryTotal">R$ 0,00</span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="label">Total Pago</span>
+                            <span class="amount paid" id="summaryPaid">R$ 0,00</span>
+                        </div>
+                        <div class="financial-item">
+                            <span class="label">Saldo a Receber</span>
+                            <span class="amount due" id="summaryDue">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="form-group">
+                        <label for="resObs">Observações / Pedidos Especiais</label>
+                        <textarea id="resObs" class="form-textarea"
+                            placeholder="Ex: Cama de casal + berço extra, chegada tardia, restrições alimentares..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn btn-danger btn-sm" id="btnDeleteReservation"
+                            style="display: none;">
+                            🗑️ Excluir
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnGenerateVoucher"
+                            style="display: none;">
+                            🧾 Ver Voucher
+                        </button>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" class="btn btn-secondary" id="btnCancelModal">Cancelar</button>
+                        <button type="button" class="btn btn-gold" id="btnQuickCheckIn" style="display: none;">
+                            🏨 Fazer Check-in
+                        </button>
+                        <button type="button" class="btn btn-primary" id="btnQuickCheckOut" style="display: none;">
+                            🏁 Fazer Check-out
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btnSaveReservation">
+                            💾 Salvar Reserva
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL: GESTÃO DE MANUTENÇÃO DE APARTAMENTOS (BLOQUEIOS / LIBERAÇÕES)
+         ========================================================================== -->
+    <div class="modal-overlay" id="blockModal" role="dialog" aria-modal="true">
+        <div class="modal-card modal-md">
+            <div class="modal-header">
+                <h3 id="blockModalTitle">🔧 Gestão de Manutenção de Apartamentos</h3>
+                <button class="modal-close-btn" id="btnCloseBlockModal">&times;</button>
+            </div>
+
+            <!-- Abas do Modal: Interditar / Lista Ativa -->
+            <div class="maintenance-tabs-bar">
+                <button type="button" class="maintenance-tab-btn active" id="tabBtnNewBlock">
+                    ➕ Interditar / Editar
+                </button>
+                <button type="button" class="maintenance-tab-btn" id="tabBtnActiveBlocks">
+                    📋 Em Manutenção (<span id="countActiveBlocksBadge">0</span>)
+                </button>
+            </div>
+
+            <!-- Painel 1: Formulário de Interdição / Edição -->
+            <div id="blockFormPanel">
+                <form id="blockForm">
+                    <input type="hidden" id="blockId" value="" />
+                    <div class="modal-body">
+                        <!-- Alerta contextual quando estiver gerenciando quarto já bloqueado -->
+                        <div id="blockActiveBanner" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.8rem; color: #fca5a5;">
+                            ⚠️ <strong>Este quarto está interditado para manutenção.</strong> Você pode ajustar os dados abaixo ou liberá-lo imediatamente para reservas.
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="blockQuarto">Quarto a ser Interditado <span class="required">*</span></label>
+                                <select id="blockQuarto" class="form-select" required></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="blockCategoria">Tipo de Serviço / Problema <span class="required">*</span></label>
+                                <select id="blockCategoria" class="form-select">
+                                    <option value="❄️ Ar Condicionado">❄️ Ar Condicionado</option>
+                                    <option value="💧 Hidráulica / Vazamento">💧 Hidráulica / Vazamento</option>
+                                    <option value="⚡ Elétrica / Iluminação">⚡ Elétrica / Iluminação</option>
+                                    <option value="🎨 Pintura / Reforma">🎨 Pintura / Reforma</option>
+                                    <option value="🛏️ Mobília / Colchão">🛏️ Mobília / Colchão</option>
+                                    <option value="🧹 Limpeza Pesada">🧹 Limpeza Pesada</option>
+                                    <option value="🚪 Fechaduras e Portas">🚪 Fechaduras e Portas</option>
+                                    <option value="🔧 Manutenção Geral" selected>🔧 Manutenção Geral</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blockMotivo">Descrição do Problema / Serviço <span class="required">*</span></label>
+                            <input type="text" id="blockMotivo" class="form-input"
+                                placeholder="Ex: Vazamento no chuveiro, troca de peça necessária" required />
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="blockCheckIn">Data de Início da Manutenção <span class="required">*</span></label>
+                                <input type="date" id="blockCheckIn" class="form-input" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="blockCheckOut">Previsão de Conclusão (Check-out) <span class="required">*</span></label>
+                                <input type="date" id="blockCheckOut" class="form-input" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blockTecnico">Responsável Técnico / Prestador (Opcional)</label>
+                            <input type="text" id="blockTecnico" class="form-input"
+                                placeholder="Ex: Eletricista Marcos / Empresa Refrigeração Silva" />
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <button type="button" class="btn btn-danger" id="btnDeleteBlock" style="display: none;">
+                            🔓 Liberar Quarto (Concluir Manutenção)
+                        </button>
+                        <div style="display: flex; gap: 8px; margin-left: auto;">
+                            <button type="button" class="btn btn-secondary" id="btnCancelBlockModal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="btnSubmitBlock">🔒 Confirmar Interdição</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Painel 2: Lista de Quartos Atualmente em Manutenção -->
+            <div id="blockActiveListPanel" style="display: none;">
+                <div class="modal-body" style="max-height: 380px; overflow-y: auto;">
+                    <div id="activeBlocksListContainer">
+                        <!-- Preenchido dinamicamente via JS -->
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" id="btnCloseActiveBlocksPanel">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL: NOTAS COM SALDO EM ABERTO
+         ========================================================================== -->
+    <div class="modal-overlay" id="receivablesModal" role="dialog" aria-modal="true" aria-labelledby="receivablesTitle">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <div>
+                    <h3 id="receivablesTitle">💳 Notas com Saldo em Aberto</h3>
+                    <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.82rem;">
+                        Os saldos permanecem aqui até o pagamento total da nota.
+                    </p>
+                </div>
+                <button type="button" class="modal-close-btn" id="btnCloseReceivables">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 65vh; overflow-y: auto;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; align-items: end; margin-bottom: 14px;">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="receivablesNoteSearch">Pesquisar pela numeração da nota</label>
+                        <input type="search" id="receivablesNoteSearch" class="form-input" placeholder="Ex.: NF-1001" />
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="receivablesDateFilter">Selecionar data da hospedagem ou recebimento</label>
+                        <input type="date" id="receivablesDateFilter" class="form-input" />
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="btnClearReceivablesFilters">Limpar filtros</button>
+                </div>
+                <p id="receivablesResultCount" style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px;"></p>
+                <div id="receivablesList"></div>
+            </div>
+            <div class="modal-footer" style="justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" id="btnCloseReceivablesFooter">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL: REGISTRAR PAGAMENTO NA RECEPÇÃO
+         ========================================================================== -->
+    <div class="modal-overlay" id="receptionPaymentModal" role="dialog" aria-modal="true" aria-labelledby="receptionPaymentTitle">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h3 id="receptionPaymentTitle">💳 Registrar Pagamento</h3>
+                <button type="button" class="modal-close-btn" id="btnCloseReceptionPayment">&times;</button>
+            </div>
+            <form id="receptionPaymentForm">
+                <div class="modal-body">
+                    <p id="receptionPaymentReservation" style="color: var(--text-secondary);"></p>
+                    <div class="form-group">
+                        <label for="receptionPaymentDate">Data do recebimento</label>
+                        <input type="date" id="receptionPaymentDate" class="form-input" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="receptionPaymentAmount">Valor recebido (R$)</label>
+                        <input type="number" id="receptionPaymentAmount" class="form-input" min="0.01" step="0.01" required />
+                        <small id="receptionPaymentBalance" style="color: var(--text-muted);"></small>
+                        <small id="receptionPaymentLegacyBalance" style="display: block; color: var(--text-muted); margin-top: 6px;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="receptionPaymentMethod">Forma de pagamento</label>
+                        <select id="receptionPaymentMethod" class="form-select" required>
+                            <option value="PIX">PIX</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="Transferência">Transferência Bancária</option>
+                        </select>
+                    </div>
+                    <div id="receptionPaymentHistory" style="font-size: 0.8rem; color: var(--text-secondary);"></div>
+                </div>
+                <div class="modal-footer" style="justify-content: flex-end; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-secondary" id="btnCancelReceptionPayment">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" id="btnAssignReceptionLegacyPayment" hidden>Associar pagamento anterior</button>
+                    <button type="submit" class="btn btn-primary">Salvar pagamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL: VOUCHER / COMPROVANTE DE RESERVA
+         ========================================================================== -->
+    <div class="modal-overlay" id="voucherModal" role="dialog" aria-modal="true">
+        <div class="modal-card modal-lg">
+            <div class="modal-header no-print">
+                <h3>🧾 Comprovante de Reserva / Voucher</h3>
+                <button class="modal-close-btn" id="btnCloseVoucherModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="voucher-print-container" id="voucherContent">
+                    <!-- Conteúdo renderizado pelo JS -->
+                </div>
+            </div>
+            <div class="modal-footer no-print" style="justify-content: space-between;">
+                <button type="button" class="btn btn-secondary" id="btnCopyWhatsApp">
+                    📲 Copiar Texto para WhatsApp
+                </button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" id="btnCloseVoucherBtn">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="btnPrintVoucher">
+                        🖨️ Imprimir Voucher
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip flutuante de detalhes da reserva -->
+    <div class="reservation-tooltip" id="resTooltip"></div>
+
+    <!-- Notificações Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts da Aplicação (Funciona direto com duplo clique no navegador) -->
+    <script src="js/rooms.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/reservations.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

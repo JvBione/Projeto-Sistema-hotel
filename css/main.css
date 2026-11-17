@@ -1,0 +1,1239 @@
+/* ==========================================================================
+   DESIGN SYSTEM - SISTEMA POUSADA (PMS RECEPÇÃO)
+   Estilo Moderno, Sofisticado e Otimizado para Operação Rápida
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Paleta Principal Sofisticada */
+    --bg-main: #0c1222;
+    --bg-surface: #131d35;
+    --bg-surface-elevated: #1a2747;
+    --bg-card: rgba(26, 39, 71, 0.7);
+    --bg-card-hover: rgba(35, 52, 94, 0.85);
+
+    /* Cores de Destaque */
+    --accent-gold: #d4a373;
+    --accent-gold-light: #faedcd;
+    --accent-primary: #3b82f6;
+    --accent-primary-hover: #2563eb;
+
+    /* Status de Reservas */
+    --color-confirmada: #10b981;
+    --color-confirmada-bg: rgba(16, 185, 129, 0.15);
+    --color-confirmada-border: rgba(16, 185, 129, 0.4);
+
+    --color-pendente: #f59e0b;
+    --color-pendente-bg: rgba(245, 158, 11, 0.15);
+    --color-pendente-border: rgba(245, 158, 11, 0.4);
+
+    --color-hospedado: #06b6d4;
+    --color-hospedado-bg: rgba(6, 182, 212, 0.18);
+    --color-hospedado-border: rgba(6, 182, 212, 0.45);
+
+    --color-finalizada: #64748b;
+    --color-finalizada-bg: rgba(100, 116, 139, 0.15);
+    --color-finalizada-border: rgba(100, 116, 139, 0.3);
+
+    --color-bloqueio: #f43f5e;
+    --color-bloqueio-bg: rgba(244, 63, 94, 0.2);
+    --color-bloqueio-border: rgba(244, 63, 94, 0.45);
+
+    /* Textos */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-gold: #f6d8ae;
+
+    /* Bordas e Sombras */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-highlight: rgba(255, 255, 255, 0.16);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.5);
+    --glass-blur: blur(12px);
+
+    /* Raios de Borda */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+}
+
+/* Reset Global */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   CABEÇALHO PRINCIPAL (TOP NAVBAR)
+   ========================================================================== */
+.top-header {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: var(--glass-blur);
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #d4a373 0%, #b07d4b 100%);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 4px 14px rgba(212, 163, 115, 0.35);
+}
+
+.brand-info h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-info h1 span.badge-pousada {
+    font-size: 0.7rem;
+    background: rgba(212, 163, 115, 0.2);
+    color: var(--accent-gold);
+    border: 1px solid rgba(212, 163, 115, 0.4);
+    padding: 2px 7px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.brand-info p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.header-clock-date {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.header-clock-date strong {
+    color: var(--text-primary);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   BOTÕES E AÇÕES RÁPIDAS
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    user-select: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, #d4a373 0%, #b07d4b 100%);
+    color: #1e1b18;
+    box-shadow: 0 4px 12px rgba(212, 163, 115, 0.35);
+}
+.btn-gold:hover {
+    background: linear-gradient(135deg, #e3b789 0%, #bd8a58 100%);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--text-primary);
+    border-color: var(--border-subtle);
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--border-highlight);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: rgba(244, 63, 94, 0.15);
+    color: #fda4af;
+    border-color: rgba(244, 63, 94, 0.3);
+}
+.btn-danger:hover {
+    background: rgba(244, 63, 94, 0.25);
+    color: #fff;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+.btn-icon-only {
+    padding: 8px 10px;
+}
+
+/* ==========================================================================
+   CARDS DE STATUS / KPI DASHBOARD
+   ========================================================================== */
+.dashboard-kpi-container {
+    padding: 16px 24px 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+}
+
+.kpi-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.kpi-card:hover {
+    border-color: var(--border-highlight);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.kpi-icon.occupancy { background: rgba(59, 130, 246, 0.18); color: #60a5fa; }
+.kpi-icon.rooms { background: rgba(16, 185, 129, 0.18); color: #34d399; }
+.kpi-icon.checkin { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
+.kpi-icon.checkout { background: rgba(168, 85, 247, 0.18); color: #c084fc; }
+.kpi-icon.revenue { background: rgba(212, 163, 115, 0.2); color: #f6d8ae; }
+
+.kpi-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.kpi-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-top: 2px;
+}
+
+.kpi-subtext {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   BARRA DE FERRAMENTAS & NAVEGAÇÃO TEMPORAL (MÊS/ANO + FILTROS)
+   ========================================================================== */
+.controls-toolbar {
+    padding: 10px 24px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    z-index: 90;
+}
+
+.date-navigator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+}
+
+.date-navigator select {
+    background: transparent;
+    color: var(--text-primary);
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 6px 10px;
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+}
+
+.date-navigator select option {
+    background: #131d35;
+    color: #fff;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 6px 12px;
+    gap: 8px;
+    min-width: 260px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    width: 100%;
+    font-family: inherit;
+}
+
+.search-box input::placeholder {
+    color: var(--text-muted);
+}
+
+.filters-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+}
+
+.filter-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--border-highlight);
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    border-color: #60a5fa !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+}
+
+/* ==========================================================================
+   PAINEL DE QUADRADOS DE OCUPAÇÃO RÁPIDA (HOJE)
+   ========================================================================== */
+.room-status-overview-section {
+    margin: 10px 24px 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: 16px 20px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.room-status-overview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 10px;
+}
+
+.overview-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.overview-title-group h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.overview-date-badge {
+    background: rgba(212, 163, 115, 0.18);
+    color: var(--text-gold);
+    border: 1px solid rgba(212, 163, 115, 0.35);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+
+.overview-legend-badges {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.badge-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-status-pill.available {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.badge-status-pill.available .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+.badge-status-pill.occupied {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.badge-status-pill.occupied .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 8px #ef4444;
+}
+
+/* Grade dos Quadrados dos Apartamentos */
+.rooms-squares-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+
+.room-square-card {
+    border-radius: var(--radius-lg);
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    overflow: hidden;
+}
+
+.room-square-card:hover {
+    transform: translateY(-3px) scale(1.02);
+}
+
+/* Quadrado Verde: Disponível para reserva */
+.room-square-card.available {
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.16) 0%, rgba(6, 78, 59, 0.4) 100%);
+    border: 2px solid #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.room-square-card.available:hover {
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+    border-color: #34d399;
+}
+
+/* Quadrado Vermelho: Ocupado / Indisponível */
+.room-square-card.occupied {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.2) 0%, rgba(127, 29, 29, 0.4) 100%);
+    border: 2px solid #ef4444;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.room-square-card.occupied:hover {
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.45);
+    border-color: #f87171;
+}
+
+.room-square-number {
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 2px;
+}
+
+.room-square-card.available .room-square-number {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.room-square-card.occupied .room-square-number {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.room-square-category {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+
+.room-square-status-text {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.room-square-card.available .room-square-status-text {
+    color: #34d399;
+}
+
+.room-square-card.occupied .room-square-status-text {
+    color: #fca5a5;
+}
+
+.room-square-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.room-square-card.occupied .room-square-sub {
+    color: #fecaca;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   LEGENDA DE STATUS
+   ========================================================================== */
+.status-legend-bar {
+    padding: 8px 24px;
+    background: rgba(12, 18, 34, 0.85);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.78rem;
+}
+
+.legend-items {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+}
+
+.legend-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.legend-color-dot.confirmada { background: var(--color-confirmada); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+.legend-color-dot.pendente { background: var(--color-pendente); box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+.legend-color-dot.hospedado { background: var(--color-hospedado); box-shadow: 0 0 8px rgba(6,182,212,0.5); }
+.legend-color-dot.finalizada { background: var(--color-finalizada); }
+.legend-color-dot.bloqueio { background: var(--color-bloqueio); box-shadow: 0 0 8px rgba(244,63,94,0.5); }
+
+/* ==========================================================================
+   MODAIS E FORMULÁRIOS
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: var(--glass-blur);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-highlight);
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 680px;
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-card.modal-sm {
+    max-width: 480px;
+}
+
+.modal-card.modal-lg {
+    max-width: 820px;
+}
+
+.modal-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.modal-header h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.02);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Campos de Formulário */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+}
+
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.form-group label span.required {
+    color: #f43f5e;
+}
+
+.form-input, .form-select, .form-textarea {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.form-select option {
+    background: #131d35;
+    color: #fff;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.financial-summary-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.financial-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.financial-item .label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   WIZARD DE RESERVA (ETAPAS GUIADAS: DATA PRIMEIRO, DEPOIS QUARTO)
+   ========================================================================== */
+.wizard-step-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+}
+
+.step-badge {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+}
+
+.step-text h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.step-text p {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+
+/* Abas de Bloco no Modal */
+.modal-block-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.modal-block-tab-btn {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-block-tab-btn:hover {
+    color: #fff;
+    border-color: var(--border-highlight);
+}
+
+.modal-block-tab-btn.active {
+    background: rgba(212, 163, 115, 0.2);
+    border-color: var(--accent-gold);
+    color: var(--text-gold);
+}
+
+/* Grade de Seleção de Quartos no Modal */
+.modal-room-picker-container {
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 10px;
+    scrollbar-width: thin;
+}
+
+.modal-room-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+    gap: 8px;
+}
+
+.modal-room-card {
+    border-radius: var(--radius-md);
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+    user-select: none;
+}
+
+/* Quarto Livre no período */
+.modal-room-card.available {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+.modal-room-card.available:hover {
+    background: rgba(16, 185, 129, 0.18);
+    border-color: #10b981;
+    transform: translateY(-2px);
+}
+
+/* Quarto Ocupado no período */
+.modal-room-card.occupied {
+    background: rgba(239, 68, 68, 0.06);
+    border-color: rgba(239, 68, 68, 0.25);
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* Quarto Selecionado */
+.modal-room-card.selected {
+    background: linear-gradient(135deg, rgba(212, 163, 115, 0.3) 0%, rgba(176, 125, 75, 0.4) 100%) !important;
+    border: 2px solid #f6d8ae !important;
+    box-shadow: 0 0 14px rgba(212, 163, 115, 0.45) !important;
+    transform: scale(1.04);
+    opacity: 1 !important;
+}
+
+.modal-room-number {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+}
+
+.modal-room-category {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.modal-room-status-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.modal-room-card.available .modal-room-status-badge {
+    color: #34d399;
+}
+
+.modal-room-card.occupied .modal-room-status-badge {
+    color: #f87171;
+}
+
+.modal-room-card.selected .modal-room-status-badge {
+    color: #fef3c7;
+    font-weight: 800;
+}
+
+.financial-item .amount {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.financial-item .amount.due {
+    color: #fbbf24;
+}
+
+.financial-item .amount.paid {
+    color: #34d399;
+}
+
+/* ==========================================================================
+   BADGES DE QUARTO
+   ========================================================================== */
+.badge-window {
+    background: rgba(56, 189, 248, 0.15);
+    color: #7dd3fc;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.badge-no-window {
+    background: rgba(148, 163, 184, 0.15);
+    color: #cbd5e1;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.badge-master {
+    background: rgba(212, 163, 115, 0.2);
+    color: #f6d8ae;
+    border: 1px solid rgba(212, 163, 115, 0.45);
+}
+
+.badge-standard {
+    background: rgba(129, 140, 248, 0.15);
+    color: #c7d2fe;
+    border: 1px solid rgba(129, 140, 248, 0.3);
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATIONS
+   ========================================================================== */
+.toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-highlight);
+    border-radius: var(--radius-md);
+    padding: 12px 18px;
+    color: #fff;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    min-width: 280px;
+    animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.success { border-left: 4px solid #10b981; }
+.toast.error { border-left: 4px solid #f43f5e; }
+.toast.info { border-left: 4px solid #3b82f6; }
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* ==========================================================================
+   ESTILO PARA IMPRESSÃO DE VOUCHER / COMPROVANTE
+   ========================================================================== */
+.voucher-print-container {
+    background: #ffffff;
+    color: #1e293b;
+    padding: 30px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.voucher-header {
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.voucher-header h2 {
+    font-size: 1.4rem;
+    color: #0f172a;
+    margin: 0;
+}
+
+.voucher-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+}
+
+.voucher-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.voucher-field strong {
+    color: #0f172a;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #voucherModal, #voucherModal * {
+        visibility: visible;
+    }
+    #voucherModal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: transparent;
+        padding: 0;
+    }
+    .modal-header, .modal-footer, .no-print {
+        display: none !important;
+    }
+    .voucher-print-container {
+        box-shadow: none;
+        padding: 0;
+    }
+}
+
+/* Responsividade básica para telas menores */
+@media (max-width: 900px) {
+    .dashboard-kpi-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .top-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .header-actions {
+        justify-content: flex-end;
+    }
+    .form-grid-2, .form-grid-3, .form-grid-4 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   GESTÃO DE MANUTENÇÃO DE APARTAMENTOS
+   ========================================================================== */
+.modal-card.modal-md {
+    max-width: 620px;
+}
+
+.maintenance-tabs-bar {
+    display: flex;
+    gap: 8px;
+    padding: 12px 24px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.maintenance-tab-btn {
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom: 2px solid transparent;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.maintenance-tab-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.maintenance-tab-btn.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-subtle);
+    border-bottom-color: var(--accent-gold);
+}
+
+.maintenance-badge-pill {
+    background: #ef4444;
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+
+.active-block-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.15s ease;
+}
+
+.active-block-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--border-highlight);
+}
+
